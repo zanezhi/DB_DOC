@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.db.mysql.dao.MySqlMapper">
+
+    <select id="getColumns" resultType="com.example.db.mysql.dto.TableDto">
+        SELECT
+          table_schema AS tableSchema,
+          table_name AS tableName,
+          column_name AS columnName,
+          column_default AS columnDefault,
+          is_nullable AS isNullable,
+          data_type AS dataType,
+          column_type AS columnType,
+          column_comment AS columnComment
+        FROM
+          information_schema.COLUMNS
+        WHERE table_schema != 'information_schema'
+        <if test="tableDto.tableSchema != null and tableDto.tableSchema != '' ">
+            and table_schema LIKE '%' #{tableDto.tableSchema} '%'
+        </if>
+        <if test="tableDto.tableName != null and tableDto.tableName != '' ">
+            and table_name LIKE '%' #{tableDto.tableName} '%'
+        </if>
+        <if test="tableDto.columnName != null and tableDto.columnName != '' ">
+            and column_name LIKE '%' #{tableDto.columnName} '%'
+        </if>
+        <if test="tableDto.columnComment != null and tableDto.columnComment != '' ">
+            and column_comment LIKE '%' #{tableDto.columnComment} '%'
+        </if>
+        ORDER BY table_schema,table_name,column_name
+    </select>
+</mapper>
